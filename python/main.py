@@ -234,9 +234,17 @@ def generate_frames():
             cv2.rectangle(frame, (5, 5), (150, 45), (0, 0, 0), -1)  # Schwarzer Hintergrund
             cv2.putText(frame, fps_text, (10, 35), 
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-            
-            
-            
+
+            # --- Schwarze Bereiche finden und grün umrahmen ---
+            # In Graustufen umwandeln
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # Schwellenwert für "schwarz" (anpassbar)
+            _, mask = cv2.threshold(gray, 40, 255, cv2.THRESH_BINARY_INV)
+            # Konturen finden
+            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            # Konturen grün umrahmen
+            cv2.drawContours(frame, contours, -1, (0, 255, 0), 2)
+
             # Frame als JPEG kodieren (mit reduzierter Qualität)
             ret, buffer = cv2.imencode('.jpg', frame, encode_param)
             if not ret:
