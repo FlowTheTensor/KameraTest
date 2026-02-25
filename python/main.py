@@ -276,32 +276,11 @@ def video_feed():
 
 
 if __name__ == '__main__':
-    import sys
-    import subprocess
-
-    # Bei Autostart nach Boot warten bis Kamera bereit ist
-    if '--wait' in sys.argv:
-        print("Warte 10 Sekunden auf Kamera-Initialisierung...")
-        time.sleep(10)
-
-    # USB-Reset versuchen um Kamera zu aktivieren
-    if '--usb-reset' in sys.argv or '--wait' in sys.argv:
-        print("Versuche USB-Reset...")
-        try:
-            # USB-Subsystem neu scannen
-            subprocess.run(['sudo', 'udevadm', 'trigger'], timeout=5)
-            subprocess.run(['sudo', 'udevadm', 'settle'], timeout=10)
-            time.sleep(2)
-            print("USB-Reset abgeschlossen")
-        except Exception as e:
-            print(f"USB-Reset fehlgeschlagen: {e}")
-
-        # Gerätenamen automatisch ermitteln
-        import socket
-        device_name = socket.gethostname()
-        print("Starte Webcam-Server...")
-        print("=" * 50)
-        print(f"🌐 Öffne im Browser:")
-        print(f"   http://{device_name}.local:80")
-        print("=" * 50)
-        app.run(host='0.0.0.0', port=80, debug=False, threaded=True)
+    # Gerätenamen automatisch ermitteln
+    device_name = socket.gethostname()
+    print("Starte Webcam-Server...")
+    print("=" * 50)
+    print(f"🌐 Öffne im Browser:")
+    print(f"   http://{device_name}.local:80")
+    print("=" * 50)
+    app.run(host='0.0.0.0', port=80, debug=False, threaded=True)
