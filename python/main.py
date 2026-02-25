@@ -272,28 +272,18 @@ def video_feed():
     )
 
 
-def get_local_ip():
-    """Ermittelt die lokale IP-Adresse"""
-    try:
-        # Verbindung zu externem Server herstellen (ohne tatsächlich zu verbinden)
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        ip = s.getsockname()[0]
-        s.close()
-        return ip
-    except:
-        return "127.0.0.1"
+
 
 
 if __name__ == '__main__':
     import sys
     import subprocess
-    
+
     # Bei Autostart nach Boot warten bis Kamera bereit ist
     if '--wait' in sys.argv:
         print("Warte 10 Sekunden auf Kamera-Initialisierung...")
         time.sleep(10)
-    
+
     # USB-Reset versuchen um Kamera zu aktivieren
     if '--usb-reset' in sys.argv or '--wait' in sys.argv:
         print("Versuche USB-Reset...")
@@ -305,12 +295,13 @@ if __name__ == '__main__':
             print("USB-Reset abgeschlossen")
         except Exception as e:
             print(f"USB-Reset fehlgeschlagen: {e}")
-    
-    local_ip = get_local_ip()
-    print("Starte Webcam-Server...")
-    print("=" * 50)
-    print(f"🌐 Öffne im Browser:")
-    print(f"   http://{local_ip}:80")
-    print(f"   http://localhost:80 (lokal)")
-    print("=" * 50)
-    app.run(host='0.0.0.0', port=80, debug=False, threaded=True)
+
+        # Gerätenamen automatisch ermitteln
+        import socket
+        device_name = socket.gethostname()
+        print("Starte Webcam-Server...")
+        print("=" * 50)
+        print(f"🌐 Öffne im Browser:")
+        print(f"   http://{device_name}.local:80")
+        print("=" * 50)
+        app.run(host='0.0.0.0', port=80, debug=False, threaded=True)
